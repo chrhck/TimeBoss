@@ -1,5 +1,5 @@
 # TimeBoss
-Lightweight python timing class.
+Lightweight python timing class. Inspired by `TimeLord` (https://github.com/IceCubeOpenSource/skyllh)
 
 ## Usage
 ```python
