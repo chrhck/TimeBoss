@@ -57,8 +57,8 @@ class TimeBoss:
         TimeBoss.all_timers[name] = self
 
     def __enter__(self):
-        self._start = perf_counter()
         TimeBoss.timer_stack.append(self)
+        self._start = perf_counter()        
 
     def __exit__(self, type, value, traceback):
         dt = perf_counter() - self._start
