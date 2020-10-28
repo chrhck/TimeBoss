@@ -19,5 +19,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=["numpy", "seaborn >= 0.11.0"]
+    install_requires=["numpy"]
 )
