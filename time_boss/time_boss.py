@@ -12,7 +12,7 @@ try:
     _HAS_SEABORN = True
 except ImportError:
     print("seaborn not found. plotting will not be available")
-    _HAS_SEABORN = True
+    _HAS_SEABORN = False
 
 class TimeBoss:
     """
