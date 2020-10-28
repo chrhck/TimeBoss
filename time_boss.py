@@ -2,6 +2,18 @@ from time import perf_counter
 from typing import List, Dict
 import numpy as np
 
+try:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    import pandas as pd
+
+    _HAS_SEABORN = True
+except ImportError:
+    print("seaborn not found. plotting will not be available")
+    _HAS_SEABORN = True
+
 class TimeBoss:
     """
     Implements timing via context managers.
@@ -19,6 +31,8 @@ class TimeBoss:
     root_timers: List["TimeBoss"] = []
     timer_stack: List["TimeBoss"] = []
     all_timers: Dict[str, "TimeBoss"] = {}
+
+    unit_conv = {"s": 1, "ms": 1E3, "mus": 1E6}
 
     def __init__(self, name: str):
         if name in TimeBoss.all_timers:
@@ -61,10 +75,10 @@ class TimeBoss:
     def print_res(timer: "TimeBoss", unit: str, level:int):
         """Pretty print the timing result"""
 
-        unit_conv = {"s": 1, "ms": 1E3, "mus": 1E6}
-        if not unit in unit_conv:
+
+        if not unit in TimeBoss.unit_conv:
             unit = "s"
-        unitf = unit_conv[unit]
+        unitf = TimeBoss.unit_conv[unit]
 
         tot_time = sum(timer.timings) * unitf
         mean_time = np.average(timer.timings) * unitf
@@ -84,3 +98,29 @@ class TimeBoss:
         """Print the results of all timers"""
         for timer in cls.root_timers:
             timer._result(unit)
+
+    if _HAS_SEABORN:
+        @classmethod
+        def plot_results(cls):
+
+            num_timers = len(cls.all_timers)
+            num_rows = int(np.ceil(np.sqrt(num_timers)))
+            fig, axs = plt.subplots(num_rows, num_rows, figsize=(4*num_rows, 3*num_rows))
+
+            for timer, ax in zip(cls.all_timers.values(), axs.ravel()):
+                sns.histplot(timer.timings, ax=ax, stat="density")
+                ax.set_xlabel("Timings [s]")
+                ax.set_ylabel("Density")
+                ax.set_title(timer.name)
+                ax.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+            plt.tight_layout()
+            plt.savefig("timeboss_results.png", dpi=150)
+
+            fig, ax = plt.subplots(1, 1)
+            timer_stats = [timer.timings for timer in cls.all_timers.values()]
+            sns.boxplot(data=timer_stats, orient="h", ax=ax)
+            ax.set_xscale("log")
+            ax.set_yticklabels(list(cls.all_timers.keys()))
+            ax.set_xlabel("Timings [s]")
+            plt.tight_layout()
+            plt.savefig("timeboss_results_summary.png", dpi=150)
