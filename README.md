@@ -1,6 +1,11 @@
 # TimeBoss
 Lightweight python timing class. Inspired by `TimeLord` (https://github.com/IceCubeOpenSource/skyllh)
 
+## Installation
+```
+pip install TimeBoss
+```
+
 ## Usage
 ```python
 from time_boss import TimeBoss
