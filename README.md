@@ -1,2 +1,2 @@
 # TimeBoss
-Lightweight python timing class
+Lightweight python timing class.
