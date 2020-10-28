@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="TimeBoss", # Replace with your own username
-    version="0.1.1",
+    version="0.1.2",
     author="Christian Haack",
     author_email="chr.hck@gmail.com",
     description="A lightweight python timing class",
